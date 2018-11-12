@@ -16,8 +16,3 @@ Invocation::
 
     python main path-to-data-xml destination-dir
 
-
-TODO
---------------------------------------------------------------------------------
-
-* fix ``[round_note]`` references in AVX512 descriptions

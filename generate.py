@@ -59,9 +59,12 @@ class Generator(object):
 
         if entry.category is not None and entry.type is not None:
             res += CATEGORY_AND_TYPE % data
-        elif entry.category is not None: 
+        elif entry.category is not None:
             res += CATEGORY % data
-            
+
+        if entry.has_round_note:
+            res += ROUND_NOTE
+
         if entry.operation is not None:
             res += OPERATION % data
 

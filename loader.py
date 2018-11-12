@@ -28,10 +28,20 @@ class Builder(object):
         e = Entry()
         e.name          = self.intrinsic.attrib['name']
         e.technology    = self.intrinsic.attrib['tech']
-        e.description   = normalize(self.children['description'].text)
+
+        tmp = self.children['description'].text
+        round_note_tag = '[round_note]'
+        if round_note_tag in tmp:
+            tmp = tmp.replace(round_note_tag, '')
+            e.has_round_note = True
+        else:
+            e.has_round_note = False
+
+        e.description   = normalize(tmp)
+
         e.category      = self.children['category'].text
         try:
-            e.type      = self.children['type'].text # XXX: there might be more categories
+            e.type      = self.children['type'].text # XXX: there might be more types
         except KeyError:
             e.type      = None
 
@@ -82,7 +92,7 @@ def load(path):
 
     for intrinsic in data.getroot():
         #print intrinsic.attrib
-        
+
         b = Builder(intrinsic)
         entries.append(b.build())
 
