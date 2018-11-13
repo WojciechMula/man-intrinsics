@@ -1,6 +1,9 @@
 from patterns import *
 from os.path import join
 from os.path import exists
+from os.path import islink
+
+import os
 import codecs
 
 
@@ -20,8 +23,13 @@ class Generator(object):
                 else:
                     self.by_instruction[instr].append(entry)
 
-
+    
     def generate(self, targetdir):
+        self.generate_man_pages(targetdir)
+        self.generate_links(targetdir)
+
+
+    def generate_man_pages(self, targetdir):
         for i, entry in enumerate(self.entries):
             path = join(targetdir, entry.name) + '.' + MAN_GROUP
             if exists(path):
@@ -29,14 +37,14 @@ class Generator(object):
                 pass
 
             print("Generating %s (%d of %d)" % (path, i+1, len(self.entries)))
-            text = self.generate_entry(entry)
+            text = self.generate_man_page(entry)
             with codecs.open(path, 'wt', encoding='utf-8') as f:
                 f.write(text)
         else:
             print("Done")
 
 
-    def generate_entry(self, entry):
+    def generate_man_page(self, entry):
         data = {}
         data['group']       = MAN_GROUP
         data['date']        = self.date
@@ -100,6 +108,19 @@ class Generator(object):
                 res += SEE_ALSO_ENTRY % tmp
 
         return res
+
+    
+    def generate_links(self, targetdir):
+        for instruction, entries in self.by_instruction.iteritems():
+            target = join(targetdir, instruction) + '.' + MAN_GROUP
+            source = entries[0].name + '.' + MAN_GROUP
+            if exists(target):
+                if islink(target):
+                    os.unlink(target)
+                else:
+                    raise RuntimeError("'%s' already exists and is not a symlink" % target)
+
+            os.symlink(source, target)
 
 
     def see_also(self, entry):
