@@ -56,7 +56,9 @@ class Builder(object):
         try:
             e.instructions = []
             for instr in self.instructions:
-                e.instructions.append((instr.attrib['name'], instr.attrib['form']))
+                name = instr.attrib['name'].lower()
+                form = instr.attrib['form']
+                e.instructions.append((name, form))
 
         except KeyError:
             e.instructions = []
