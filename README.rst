@@ -14,5 +14,12 @@ just download that file and feed the generator.
 
 Invocation::
 
-    python main path-to-data-xml destination-dir
+    python main.py path-to-data-xml destination-dir
 
+
+See also:
+
+* https://github.com/Wunkolo/Intriman --- similar project, targeting more
+  output formats
+* https://github.com/HJLebbink/asm-dude/wiki --- data extracted from the
+  official Intel documents
