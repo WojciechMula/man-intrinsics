@@ -108,10 +108,12 @@ class Generator(object):
             try:
                 list.extend(self.by_instruction[instr])
             except KeyError:
-                return
+                break
 
         if len(list) <= 1:
             return
 
-        return [item.name for item in sorted(list) if item.name != entry.name]
+        list = sorted(set(list))
+
+        return [item.name for item in list if item.name != entry.name]
 
