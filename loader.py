@@ -13,12 +13,15 @@ class Builder(object):
         self.children = {}
         self.parameters = []
         self.instructions = []
+        self.types = []
         self.cpuid = []
         for child in intrinsic:
             if child.tag == 'parameter':
                 self.parameters.append(child)
             elif child.tag == 'instruction':
                 self.instructions.append(child)
+            elif child.tag == 'type':
+                self.types.append(child)
             elif child.tag == 'CPUID':
                 self.cpuid.append(child)
             else:
@@ -39,11 +42,12 @@ class Builder(object):
 
         e.description   = normalize(tmp)
 
-        e.category      = self.children['category'].text
-        try:
-            e.type      = self.children['type'].text # XXX: there might be more types
-        except KeyError:
-            e.type      = None
+        # merge category and types --- it's an arbitrary Intel's classification, not that important
+        e.categories    = [self.children['category'].text]
+        for item in self.types:
+            e.categories.append(item.text)
+
+        e.categories.sort()
 
         try:
             e.operation = self.children['operation'].text.strip()

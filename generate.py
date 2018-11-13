@@ -57,18 +57,15 @@ class Generator(object):
         data['arguments']   = entry.arguments
         data['description'] = entry.description
         data['operation']   = entry.operation
-        data['category']    = entry.category
-        data['type']        = entry.type
 
         res = MAIN % data
 
         if not entry.instructions:
             res += NO_INSTRUCTION_NOTE
 
-        if entry.category is not None and entry.type is not None:
-            res += CATEGORY_AND_TYPE % data
-        elif entry.category is not None:
-            res += CATEGORY % data
+        if entry.categories:
+            tmp = [CATEGORY_ENTRY % item for item in entry.categories]
+            res += CATEGORY_HEADER % (', '.join(tmp))
 
         if entry.has_round_note:
             res += ROUND_NOTE

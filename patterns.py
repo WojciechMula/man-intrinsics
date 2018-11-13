@@ -18,13 +18,11 @@ NO_INSTRUCTION_NOTE=R""".PP
 \fBNote\fP: this function might not map directly into a CPU instruction.
 """
 
-CATEGORY_AND_TYPE=R""".PP
-Category: \fI%(category)s\fP, \fI%(type)s\fP
+CATEGORY_HEADER=R""".PP
+Category: %s
 """
 
-CATEGORY=R""".PP
-Category: \fI%(category)s\fI
-"""
+CATEGORY_ENTRY=R"\fI%s\fP"
 
 ROUND_NOTE=R""".SH ROUNDING NOTE
 .PP
