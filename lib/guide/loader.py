@@ -81,19 +81,12 @@ def load(path):
 
     db = Database()
 
-    for item in data.iter():
-        if item.tag == 'intrinsics_list':
-            db.date    = item.attrib['date']
-            db.version = item.attrib['version']
-            break
-
-    assert db.date is not None
-    assert db.version is not None
+    item = data.getiterator('intrinsics_list')[0]
+    db.date    = item.attrib['date']
+    db.version = item.attrib['version']
 
     for intrinsic in data.getroot():
         b = Builder(intrinsic)
         db.entries.append(b.build())
 
     return db
-
-
