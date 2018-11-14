@@ -7,10 +7,10 @@ def main():
     targetdir = sys.argv[2]
 
     print "Loading %s" % path
-    date, version, entries = load(path)
+    db = load(path)
 
     print "Generating man pages in %s" % targetdir
-    gen = Generator(date, version, entries)
+    gen = Generator(db)
     gen.generate(targetdir)
 
 

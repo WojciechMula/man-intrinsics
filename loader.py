@@ -1,8 +1,5 @@
 import xml.etree.ElementTree as ET
-
-class Entry(object):
-    def __init__(self):
-        pass
+from model import *
 
 
 class Builder(object):
@@ -81,23 +78,22 @@ def normalize(s):
 
 def load(path):
     data = ET.parse(path)
-    entries = []
-    date    = None
-    version = None
+
+    db = Database()
+
     for item in data.iter():
         if item.tag == 'intrinsics_list':
-            date    = item.attrib['date']
-            version = item.attrib['version']
+            db.date    = item.attrib['date']
+            db.version = item.attrib['version']
             break
 
-    assert date is not None
+    assert db.date is not None
+    assert db.version is not None
 
     for intrinsic in data.getroot():
-        #print intrinsic.attrib
-
         b = Builder(intrinsic)
-        entries.append(b.build())
+        db.entries.append(b.build())
 
-    return date, version, entries
+    return db
 
 

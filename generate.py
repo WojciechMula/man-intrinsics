@@ -11,12 +11,10 @@ class Struct(object):
 
 
 class Generator(object):
-    def __init__(self, date, version, entries):
-        self.date    = date
-        self.version = version
-        self.entries = entries
+    def __init__(self, db):
+        self.db = db
         self.by_instruction = {}
-        for entry in self.entries:
+        for entry in self.db.entries:
             if entry.instructions is None:
                 continue
 
@@ -33,13 +31,13 @@ class Generator(object):
 
 
     def generate_man_pages(self, targetdir):
-        for i, entry in enumerate(self.entries):
+        for i, entry in enumerate(self.db.entries):
             path = join(targetdir, entry.name) + '.' + MAN_GROUP
             if exists(path):
                 #raise RuntimeError("'%s' already exists, won't continue" % path)
                 pass
 
-            print("Generating %s (%d of %d)" % (path, i+1, len(self.entries)))
+            print("Generating %s (%d of %d)" % (path, i+1, len(self.db)))
             text = self.generate_man_page(entry)
             with codecs.open(path, 'wt', encoding='utf-8') as f:
                 f.write(text)
@@ -50,8 +48,8 @@ class Generator(object):
     def generate_man_page(self, entry):
         data = {}
         data['group']       = MAN_GROUP
-        data['date']        = self.date
-        data['version']     = self.version
+        data['date']        = self.db.date
+        data['version']     = self.db.version
 
         data['technology']  = entry.technology
         data['name']        = entry.name
