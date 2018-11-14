@@ -1,6 +1,6 @@
 import sys
-from loader import load
-from generate import Generator
+from lib.guide.loader import load
+from lib.man.generate import Generator
 
 def main():
     path = sys.argv[1]
