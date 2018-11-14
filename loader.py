@@ -57,15 +57,11 @@ class Builder(object):
         e.include       = self.children['header'].text
         e.rettype       = self.intrinsic.attrib['rettype']
 
-        try:
-            e.instructions = []
-            for instr in self.instructions:
-                name = instr.attrib['name'].lower()
-                form = instr.attrib['form']
-                e.instructions.append((name, form))
-
-        except KeyError:
-            e.instructions = []
+        e.instructions = []
+        for instr in self.instructions:
+            name = instr.attrib['name'].lower()
+            form = instr.attrib.get('form', '') # might not be present
+            e.instructions.append((name, form))
 
         e.cpuid = [item.text for item in self.cpuid]
         e.cpuid.sort()
