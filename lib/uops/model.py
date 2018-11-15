@@ -30,10 +30,10 @@ class Measurement(object):
     )
 
     def __init__(self):
-        self.latency    = None
-        self.throughput = None
-        self.total_uops = None
-        self.uops_details = []
+        self.latency      = None
+        self.throughput   = None
+        self.total_uops   = None
+        self.uops_details = None
 
 
     def __str__(self):

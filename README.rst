@@ -8,13 +8,15 @@ but there are days when I'm offline and then miss ability to do quick searches.
 
 __ https://software.intel.com/sites/landingpage/IntrinsicsGuide/.
 
-This repository contains a python script which converts data used by Intrinsics
-Guide into set of unix manual pages. *Intrinsics Guide* loads a huge XML file,
-just download that file and feed the generator.
+This repository contains a python script which converts data used by *Intrinsics
+Guide* and uops.info into set of unix manual pages.
+
+*Intrinsics Guide* loads a huge XML file, just download that file and feed the
+generator.
 
 Invocation::
 
-    python main.py path-to-data-xml destination-dir
+    python main.py guide.xml uops.info destination-dir
 
 
 See also:

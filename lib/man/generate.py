@@ -11,8 +11,10 @@ class Struct(object):
 
 
 class Generator(object):
-    def __init__(self, db):
+    def __init__(self, db, arch_db):
         self.db = db
+        self.arch_db = arch_db
+
         self.by_instruction = {}
         for entry in self.db.entries:
             if entry.instructions is None:
@@ -93,6 +95,8 @@ class Generator(object):
                 }
                 res += CPUID_ENTRY % tmp
 
+        res += self.generate_arch_details(entry)
+
         see_also = self.see_also(entry)
         if see_also:
             res += SEE_ALSO_HEADER
@@ -119,6 +123,44 @@ class Generator(object):
                     raise RuntimeError("'%s' already exists and is not a symlink" % target)
 
             os.symlink(source, target)
+
+
+    def generate_arch_details(self, entry):
+        res = ''
+
+        arch_details = self.get_arch_details(entry)
+        if not arch_details:
+            return res
+
+        res += ARCH_HEADER
+        for instruction in arch_details:
+            res += ARCH_INSTR_FORM % instruction.form
+            res += ARCH_TABLE_START
+            for arch, measurements in instruction.measurements.iteritems():
+                arch_fmt = format_architecture(arch)
+                for measurement in measurements:
+                    data = {
+                        'architecture'  : arch_fmt,
+                        'latency'       : format_latency(measurement.latency),
+                        'throughput'    : measurement.throughput,
+                        'uops'          : measurement.total_uops,
+                        'uops_details'  : format_port_details(measurement.uops_details),
+                    }
+
+                    res += ARCH_TABLE_ROW % data
+
+            res += ARCH_TABLE_END
+
+        return res
+
+
+    def get_arch_details(self, entry):
+        try:
+            for instruction, _ in entry.instructions:
+                # TODO
+                return self.arch_db[instruction]
+        except KeyError:
+            return
 
 
     def see_also(self, entry):
@@ -162,4 +204,71 @@ class Generator(object):
         list = sorted(set(s.list))
 
         return [item.name for item in list if item.name != entry.name]
+
+
+
+def format_architecture(arch_code):
+    names = {
+        #'CFL': '',
+        #'SNM': '',
+        #'SNB': '',
+        #'KBL': '',
+        'IVB': 'Ivy Bridge',
+        'NHM': 'Nehalem',
+        'WSM': 'Westmere',
+        'SKX': 'SkylakeX',
+        'BDW': 'Broadwell',
+        'HSW': 'Haswell',
+        'SKL': 'Skylake',
+    }
+
+    return names.get(arch_code, arch_code)
+
+
+class Range(object):
+    def __init__(self, val):
+        self.start = val
+        self.end   = val
+
+    def __str__(self):
+        if self.start != self.end:
+            return '%d-%d' % (self.start, self.end)
+        else:
+            return '%d' % self.start
+
+
+    __repr__ = __str__
+
+
+def format_latency(latencies):
+    if latencies is None:
+        return '\-'
+
+    if type(latencies) is int:
+        return str(latencies)
+
+    if len(latencies) == 1:
+        for number in latencies:
+            return str(number)
+
+    result = []
+    tmp    = sorted(latencies)
+    r      = Range(tmp[0])
+    for lat in tmp[1:]:
+        if r.end + 1 == lat:
+            r.end = lat
+        else:
+            result.append(r)
+            r = Range(lat)
+
+    result.append(r)
+
+    return ', '.join(map(str, result))
+
+
+def format_port_details(port_details):
+    if port_details is None:
+        return '\-'
+
+    return ' '.join('p%s:%d' % (pd.ports, pd.uops) for pd in port_details)
 
