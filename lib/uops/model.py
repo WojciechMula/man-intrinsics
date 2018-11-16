@@ -2,12 +2,14 @@ class Instruction(object):
     __slots__ = (
         'name',
         'form',
+        'cpuid',
         'measurements',
     )
 
     def __init__(self):
-        self.name = None
-        self.form = None
+        self.name  = None
+        self.form  = None
+        self.cpuid = None
         self.measurements = []
 
 

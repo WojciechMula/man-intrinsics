@@ -11,15 +11,41 @@ def load(path, log):
     log("Processing instructions...")
     instructions = []
     for instruction in data.getroot().getiterator('instruction'):
+        cpuid = isa_to_cpuid(instruction.attrib['isa-set'])
+        if cpuid is None:
+            continue
+
         name = instruction.attrib['string']
         log("loading %s" % name)
         instr = parse_instruction(instruction)
         if len(instr.measurements):
+            instr.cpuid = cpuid
             instructions.append(instr)
         else:
             log("no measurements for %s" % name)
 
     return InstructionsDB(instructions)
+
+
+def isa_to_cpuid(isa_string):
+    if isa_string.startswith('AVX512'):
+        if isa_string.endswith('_128') or \
+           isa_string.endswith('_256') or \
+           isa_string.endswith('_128N'):
+
+            # We skip AVX512_XXX_128{N} and AVX512_XXX_256
+            # as these instruction cannot be generated
+            # by intrinsics functions
+            return
+
+        for suffix in ['_512', '_KOP', '_SCALAR']:
+            if isa_string.endswith(suffix):
+                return isa_string[:-len(suffix)]
+
+        print "XXX: %s" % isa_string
+        return isa_string
+    else:
+        return isa_string
 
 
 def parse_instruction(instruction):
@@ -92,6 +118,8 @@ def parse_iaca(iaca):
     data.uops_details = parse_ports(iaca)
 
     return data
+
+
 
 
 def parse_ports(tag):
