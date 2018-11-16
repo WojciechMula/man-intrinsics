@@ -14,5 +14,10 @@ class InstructionsDB(object):
         self.architectures = architectures
 
 
-    def __getitem__(self, instruction):
-        return self.db[instruction]
+    def find(self, instruction, cpuids):
+        result = []
+        for instr in self.db[instruction]:
+            if instr.cpuid in cpuids:
+                result.append(instr)
+
+        return result

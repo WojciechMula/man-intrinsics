@@ -168,7 +168,7 @@ class Generator(object):
         result = []
         for instruction, _ in entry.instructions:
             try:
-                result.extend(self.arch_db[instruction])
+                result.extend(self.arch_db.find(instruction, entry.cpuid))
             except KeyError:
                 pass
 
