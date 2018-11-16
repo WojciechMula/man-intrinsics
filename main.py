@@ -47,11 +47,8 @@ class Application(object):
     def run(self):
         from lib.man.generate import Generator
 
-        if self.options.dump_isa or self.options.dump_arch:
-            raise NotImplementedError()
-        else:
-            gen = Generator(self.options, self.datasource)
-            gen.generate()
+        gen = Generator(self.options, self.datasource)
+        gen.generate()
 
 
 def get_options():
@@ -70,30 +67,6 @@ def get_options():
         help="path to .xml from uops.info [otional]"
     )
 
-    parser.add_option('--dump-isa', action='store_true', default=False,
-        help="list available ISAs and exit"
-    )
-
-    parser.add_option('--isa', dest='enabled_instruction_sets', action='append', metavar='NAME',
-        help="generate manual pages for given instruction set (can be passed many times)"
-    )
-
-    parser.add_option('--omit-isa', dest='disabled_instruction_sets', action='append', metavar='NAME',
-        help="do not generate manual only for given instruction set (can be passed many times)"
-    )
-
-
-    parser.add_option('--dump-arch', action='store_true', default=False,
-        help="list available archs and exit"
-    )
-    parser.add_option('--arch', dest='enabled_architectures', action='append', metavar='NAME',
-        help="include instruction timings for given architecture (can be passed many times)"
-    )
-
-    parser.add_option('--omit-arch', dest='disabled_architectures', action='append', metavar='NAME',
-        help="do not include instruction timings for given architecture (can be passed many times)"
-    )
-
     parser.add_option('-l', '--create-symlinks', dest='create_symlinks', action='store_true', default=False,
         help="create symbolic links between intrinsics functions and CPU instructions"
     )
@@ -108,12 +81,6 @@ def get_options():
 
     if options.target_dir is None:
         raise parser.error('--output is required')
-
-    if options.dump_arch or \
-       (options.enabled_architectures is not None) or \
-       (options.enabled_architectures is not None):
-
-        raise parser.error('--uarch is required when --dump-arch, --arch or --omit-arch is used')
 
     return options
 
