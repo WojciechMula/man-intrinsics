@@ -95,7 +95,7 @@ class Generator(object):
 
         if entry.cpuid:
             res += CPUID_HEADER
-            for flag in entry.cpuid:
+            for flag in sorted(entry.cpuid):
                 tmp = {
                     'flag': flag,
                     'last': '',

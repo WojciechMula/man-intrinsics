@@ -37,10 +37,10 @@ class Builder(object):
         else:
             e.has_round_note = False
 
-        e.description   = normalize(tmp)
+        e.description = normalize_text(tmp)
 
         # merge category and types --- it's an arbitrary Intel's classification, not that important
-        e.categories    = [self.children['category'].text]
+        e.categories = [self.children['category'].text]
         for item in self.types:
             e.categories.append(item.text)
 
@@ -51,8 +51,8 @@ class Builder(object):
         except KeyError:
             e.operation = None
 
-        e.include       = self.children['header'].text
-        e.rettype       = self.intrinsic.attrib['rettype']
+        e.include = self.children['header'].text
+        e.rettype = self.intrinsic.attrib['rettype']
 
         e.instructions = []
         for instr in self.instructions:
@@ -60,8 +60,12 @@ class Builder(object):
             form = instr.attrib.get('form', '') # might not be present
             e.instructions.append((name, form))
 
-        e.cpuid = [item.text for item in self.cpuid]
-        e.cpuid.sort()
+        e.cpuid = []
+        for item in self.cpuid:
+            tmp = item.text.split('/')
+            e.cpuid.extend(tmp)
+
+        e.cpuid = set(e.cpuid)
 
         tmp = ['%s %s' % (item.attrib['type'], item.attrib['varname']) for item in self.parameters]
         e.arguments = ', '.join(tmp)
@@ -71,7 +75,7 @@ class Builder(object):
         return e
 
 
-def normalize(s):
+def normalize_text(s):
     tmp = s.split()
     return ' '.join(tmp)
 
