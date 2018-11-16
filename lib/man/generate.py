@@ -216,21 +216,9 @@ class Generator(object):
 
 
 def format_architecture(arch_code):
-    names = {
-        #'CFL': '',
-        #'SNM': '',
-        #'SNB': '',
-        #'KBL': '',
-        'IVB': 'Ivy Bridge',
-        'NHM': 'Nehalem',
-        'WSM': 'Westmere',
-        'SKX': 'SkylakeX',
-        'BDW': 'Broadwell',
-        'HSW': 'Haswell',
-        'SKL': 'Skylake',
-    }
+    from lib.uops import architecture_name
 
-    return names.get(arch_code, arch_code)
+    return architecture_name(arch_code)
 
 
 class Range(object):
