@@ -11,12 +11,15 @@ class Struct(object):
 
 
 class Generator(object):
-    def __init__(self, db, arch_db):
-        self.db = db
-        self.arch_db = arch_db
+    def __init__(self, options, datasource):
+        self.options = options
+        self.datasource = datasource
+
+        self.instr_db = datasource.get_instructions()
+        self.arch_db = datasource.get_architecture_details()
 
         self.by_instruction = {}
-        for entry in self.db.entries:
+        for entry in self.instr_db.entries:
             if entry.instructions is None:
                 continue
 
@@ -26,20 +29,24 @@ class Generator(object):
                 else:
                     self.by_instruction[instr].append(entry)
 
-    
-    def generate(self, targetdir):
-        self.generate_man_pages(targetdir)
-        self.generate_links(targetdir)
+
+    def generate(self):
+        if True:
+            print "Generating man pages in %s" % self.options.target_dir
+            self.generate_man_pages(self.options.target_dir)
+
+        if self.options.create_symlinks:
+            print "Creating links to man pages for CPU instructions"
+            self.generate_links(self.options.target_dir)
 
 
     def generate_man_pages(self, targetdir):
-        for i, entry in enumerate(self.db.entries):
+        for i, entry in enumerate(self.instr_db.entries):
             path = join(targetdir, entry.name) + '.' + MAN_GROUP
-            if exists(path):
-                #raise RuntimeError("'%s' already exists, won't continue" % path)
-                pass
 
-            print("Generating %s (%d of %d)" % (path, i+1, len(self.db)))
+            if self.options.verbose:
+                print("Generating %s (%d of %d)" % (path, i+1, len(self.instr_db)))
+
             text = self.generate_man_page(entry)
             with codecs.open(path, 'wt', encoding='utf-8') as f:
                 f.write(text)
@@ -50,8 +57,8 @@ class Generator(object):
     def generate_man_page(self, entry):
         data = {}
         data['group']       = MAN_GROUP
-        data['date']        = self.db.date
-        data['version']     = self.db.version
+        data['date']        = self.instr_db.date
+        data['version']     = self.instr_db.version
 
         data['technology']  = entry.technology
         data['name']        = entry.name
@@ -111,7 +118,7 @@ class Generator(object):
 
         return res
 
-    
+
     def generate_links(self, targetdir):
         for instruction, entries in self.by_instruction.iteritems():
             target = join(targetdir, instruction) + '.' + MAN_GROUP
@@ -155,12 +162,13 @@ class Generator(object):
 
 
     def get_arch_details(self, entry):
-        try:
-            for instruction, _ in entry.instructions:
-                # TODO
-                return self.arch_db[instruction]
-        except KeyError:
-            return
+        if self.arch_db:
+            try:
+                for instruction, _ in entry.instructions:
+                    # TODO
+                    return self.arch_db[instruction]
+            except KeyError:
+                return
 
 
     def see_also(self, entry):
