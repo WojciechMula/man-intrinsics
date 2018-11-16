@@ -141,8 +141,8 @@ class Generator(object):
 
         res += ARCH_HEADER
         for instruction in arch_details:
-            res += ARCH_INSTR_FORM % instruction.form
             res += ARCH_TABLE_START
+            res += ARCH_TABLE_HEADER % instruction.form
             for arch, measurements in instruction.measurements.iteritems():
                 arch_fmt = format_architecture(arch)
                 for measurement in measurements:

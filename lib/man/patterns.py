@@ -78,13 +78,13 @@ CPUID_ENTRY=R""".br
 ARCH_HEADER=R""".SH INSTRUCTION PARAMETERS
 """
 
-ARCH_INSTR_FORM=R""".PP
-\fT%s\fP
-"""
-
 ARCH_TABLE_START=""".TS
 allbox;
+c s s s s
 l r r r l.
+"""
+
+ARCH_TABLE_HEADER="""%s
 Architecture\tLatency\tThroughput\tuops\tuops details
 """
 
