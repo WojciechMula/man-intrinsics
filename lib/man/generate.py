@@ -162,14 +162,17 @@ class Generator(object):
 
 
     def get_arch_details(self, entry):
-        if self.arch_db:
-            try:
-                for instruction, _ in entry.instructions:
-                    # TODO
-                    return self.arch_db[instruction]
-            except KeyError:
-                return
+        if not self.arch_db:
+            return
 
+        result = []
+        for instruction, _ in entry.instructions:
+            try:
+                result.extend(self.arch_db[instruction])
+            except KeyError:
+                pass
+
+        return result
 
     def see_also(self, entry):
         s = Struct()
