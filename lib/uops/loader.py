@@ -42,8 +42,9 @@ def isa_to_cpuid(isa_string):
             if isa_string.endswith(suffix):
                 return isa_string[:-len(suffix)]
 
-        print "XXX: %s" % isa_string
         return isa_string
+    elif isa_string == 'PENTIUMMMX':
+        return 'MMX'
     else:
         return isa_string
 
