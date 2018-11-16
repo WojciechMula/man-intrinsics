@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 def main():
     options = get_options()
     app = Application(options)
