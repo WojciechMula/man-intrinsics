@@ -6,6 +6,10 @@ from os.path import islink
 import os
 import codecs
 
+import logging
+log = logging.getLogger('main')
+
+
 class Struct(object):
     pass
 
@@ -32,11 +36,11 @@ class Generator(object):
 
     def generate(self):
         if True:
-            print "Generating man pages in %s" % self.options.target_dir
+            log.info("Generating man pages in %s", self.options.target_dir)
             self.generate_man_pages(self.options.target_dir)
 
         if self.options.create_symlinks:
-            print "Creating links to man pages for CPU instructions"
+            log.info("Creating links to man pages for CPU instructions")
             self.generate_links(self.options.target_dir)
 
 
@@ -44,14 +48,11 @@ class Generator(object):
         for i, entry in enumerate(self.instr_db.entries):
             path = join(targetdir, entry.name) + '.' + MAN_GROUP
 
-            if self.options.verbose:
-                print("Generating %s (%d of %d)" % (path, i+1, len(self.instr_db)))
+            log.debug("Generating %s (%d of %d)" % (path, i+1, len(self.instr_db)))
 
             text = self.generate_man_page(entry)
             with codecs.open(path, 'wt', encoding='utf-8') as f:
                 f.write(text)
-        else:
-            print("Done")
 
 
     def generate_man_page(self, entry):

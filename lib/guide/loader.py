@@ -1,4 +1,8 @@
 import xml.etree.ElementTree as ET
+import logging
+
+log = logging.getLogger('main')
+
 from model import *
 
 
@@ -85,6 +89,7 @@ def normalize_text(s):
 
 
 def load(path, filter_by_isa):
+    log.debug("Loading data from %s", path)
     data = ET.parse(path)
 
     db = Database()
@@ -93,7 +98,9 @@ def load(path, filter_by_isa):
     db.date    = item.attrib['date']
     db.version = item.attrib['version']
 
+    log.debug("Parsing instructions")
     for intrinsic in data.getroot():
+        log.debug("parsing %s", intrinsic.attrib['name'])
         b = Builder(intrinsic, filter_by_isa)
         entry = b.build()
         if entry:

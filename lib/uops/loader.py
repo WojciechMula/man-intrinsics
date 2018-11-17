@@ -1,14 +1,17 @@
 import xml.etree.ElementTree as ET
 import sys
+import logging
+
+log = logging.getLogger('main')
 
 from model import *
 from db import *
 
-def load(path, log):
-    log("Loading data from '%s'..." % path)
+def load(path):
+    log.debug("Loading data from '%s'...", path)
     data = ET.parse(path)
 
-    log("Processing instructions...")
+    log.debug("Processing instructions...")
     instructions = []
     for instruction in data.getroot().getiterator('instruction'):
         cpuid = isa_to_cpuid(instruction.attrib['isa-set'])
@@ -16,13 +19,13 @@ def load(path, log):
             continue
 
         name = instruction.attrib['string']
-        log("loading %s" % name)
+        log.debug("parsing %s", name)
         instr = parse_instruction(instruction)
         if len(instr.measurements):
             instr.cpuid = cpuid
             instructions.append(instr)
         else:
-            log("no measurements for %s" % name)
+            log.debug("no measurements for %s" % name)
 
     return InstructionsDB(instructions)
 

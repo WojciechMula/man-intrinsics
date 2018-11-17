@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 import textwrap
+import logging
+
+log = logging.getLogger('main')
 
 
 def main():
@@ -32,11 +35,11 @@ class DataSource(object):
             opts = self.options
 
             path = opts.instructions_xml
-            print "Loading instructions from %s" % path
+            log.info("Loading instructions from %s", path)
             if opts.enabled_instruction_sets:
-                print "- will include only ISA(s): %s" % fmtset(opts.enabled_instruction_sets)
+                log.info("- will include only ISA(s): %s", fmtset(opts.enabled_instruction_sets))
             if self.options.disabled_instruction_sets:
-                print "- will exclude ISA(s): %s" % fmtset(opts.disabled_instruction_sets)
+                log.info("- will exclude ISA(s): %s", fmtset(opts.disabled_instruction_sets))
 
             self.instructions = load(path, self.filter_by_isa)
 
@@ -51,17 +54,15 @@ class DataSource(object):
             opts = self.options
 
             path = opts.uops_xml
-            print "Loading architecture details from %s" % path
+            log.info("Loading architecture details from %s", path)
             if opts.enabled_architectures:
                 tmp = map(architecture_name, opts.enabled_architectures)
-                print "- will include only architecture(s): %s" % fmtset(tmp)
+                log.info("- will include only architecture(s): %s", fmtset(tmp))
             if opts.disabled_architectures:
                 tmp = map(architecture_name, opts.disabled_architectures)
-                print "- will exclude architecture(s): %s" % fmtset(tmp)
+                log.info("- will exclude architecture(s): %s", fmtset(tmp))
 
-            def silent(s):
-                pass
-            self.architecture = load(path, silent)
+            self.architecture = load(path)
 
         return self.architecture
 
@@ -193,6 +194,10 @@ def get_options():
     else:
         options.enabled_architectures = set(options.enabled_architectures)
         options.disabled_architectures = set(options.disabled_architectures)
+
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+    if options.verbose:
+        log.setLevel(logging.DEBUG)
 
     return options
 
