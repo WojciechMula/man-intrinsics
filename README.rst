@@ -40,12 +40,12 @@ or::
 Limiting ISA
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-*Intrinsics Guide* lists all SIMD (and not only SIMD) instructions. However, MMX
-is not used anymore; likewise, KNC wasn't a very widespread technology.
+**Intrinsics Guide** lists all SIMD (and not only SIMD) instructions. However,
+MMX is not used anymore; likewise, KNC wasn't a very widespread technology.
 
 It's possible to select which instructions include or exclude. The option
 ``--isa`` selects ISA to generate, the option ``--omit-isa`` excludes ISA.
-Both can be passed as many times as its needed and both accept a string,
+Both can be passed as many times as it's needed and both accept a string,
 ISA symbol, as argument
 
 To obtain the list of meaningful ISA symbols use ``--dump-isa``.
@@ -60,6 +60,27 @@ Examples::
 
     # will generate man pages for all instructions except MMX
     $ ./main.py -g guide.xml --omit-isa=SSE -o output-dir
+
+
+Limiting architectures
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Database from **uops.info** provides parameters for several architectures,
+some of them outdated. It's possible to select which architecture include
+(with option ``--arch``) or exclude (with option ``--omit-arch``).
+The options can be passed as many times as it's needed, both accept a string,
+arch name or symbol.
+
+The list of symbol and names is displayed by option ``--dump-arch``.
+
+Examples::
+
+    # will include details for architectures Haswell, Skylake and SkylakeX
+    $ ./main.py -g guide.xml -u uops.xml -o output-dir --arch=HSW --arch=skylake --arch=SkylakeX
+
+    # will exclude details for Westmere
+    $ ./main.py -g guide.xml -o output-dir --omit-arch=Westmere
+
 
 See also
 --------------------------------------------------------------------------------

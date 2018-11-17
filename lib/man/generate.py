@@ -139,11 +139,15 @@ class Generator(object):
         if not arch_details:
             return res
 
+        rows = 0
         res += ARCH_HEADER
         for instruction in arch_details:
             res += ARCH_TABLE_START
             res += ARCH_TABLE_HEADER % instruction.form
             for arch, measurements in instruction.measurements.iteritems():
+                if not self.datasource.filter_by_arch(arch):
+                    continue
+
                 arch_fmt = format_architecture(arch)
                 for measurement in measurements:
                     data = {
@@ -155,10 +159,14 @@ class Generator(object):
                     }
 
                     res += ARCH_TABLE_ROW % data
+                    rows += 1
 
             res += ARCH_TABLE_END
 
-        return res
+        if rows > 0:
+            return res
+        else:
+            return ''
 
 
     def get_arch_details(self, entry):

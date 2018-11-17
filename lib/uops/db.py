@@ -14,6 +14,10 @@ class InstructionsDB(object):
         self.architectures = architectures
 
 
+    def get_architectures(self):
+        return self.architectures
+
+
     def find(self, instruction, cpuids):
         result = []
         for instr in self.db[instruction]:

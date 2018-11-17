@@ -16,17 +16,17 @@ def architecture_name(arch_code):
     return names.get(arch_code, arch_code)
 
 
-def normalize_arch_code(string):
-    symbols = set('CFL',
-                'SNM',
-                'SNB',
-                'KBL',
-                'IVB',
-                'NHM',
-                'SKX',
-                'BDW',
-                'HSW',
-                'SKL')
+def normalize(string):
+    symbols = set(['CFL',
+                   'SNM',
+                   'SNB',
+                   'KBL',
+                   'IVB',
+                   'NHM',
+                   'SKX',
+                   'BDW',
+                   'HSW',
+                   'SKL'])
 
     mapping = {
         'IVY BRIDGE'    : 'IVB',
@@ -42,7 +42,7 @@ def normalize_arch_code(string):
     tmp = string.upper()
 
     try:
-        return mapping(tmp)
+        return mapping[tmp]
     except KeyError:
         if tmp in symbols:
             return tmp
