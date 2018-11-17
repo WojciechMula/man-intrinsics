@@ -82,6 +82,29 @@ Examples::
     $ ./main.py -g guide.xml -o output-dir --omit-arch=Westmere
 
 
+Building .deb packages
+--------------------------------------------------------------------------------
+
+To create special .deb files (control, postinst, postrm) pass option ``--deb``
+with the destination directory. Please refer to sample ``Makefile.deb`` for details.
+
+Example::
+
+    $ ln -s your-guide.xml guide.xml
+    $ ln -s your-uops.xml uops.xml
+
+    # optionally set extra options for script
+    $ export MANOPTIONS=''
+
+    $ make -f Makefile.deb
+    # it'll take some time
+
+    $ ls man*.deb
+    man-intrinsics_<guide-version>_all.deb
+
+You can install the deb file with ``dpkg -i file.deb``.
+
+
 See also
 --------------------------------------------------------------------------------
 

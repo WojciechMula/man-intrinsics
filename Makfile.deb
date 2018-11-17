@@ -1,0 +1,17 @@
+.PHONY: deb
+
+TMPDIR=/dev/shm
+BUILDDIR=$(TMPDIR)/man-intrinsics
+MANDIR=$(BUILDDIR)/usr/share/man/man7
+DEBDIR=$(BUILDDIR)
+
+GENERATOR=./main.py $(MANOPTIONS) -g data.xml -u uops.xml -o $(MANDIR) --deb $(DEBDIR)
+
+deb:
+	#rm -rf $(BUILDDIR)
+	mkdir -p $(MANDIR)
+	$(GENERATOR)
+	find $(MANDIR) -name '*.7' -exec chmod 444 '{}' \;
+	dpkg-deb -b $(DEBDIR) .
+
+# vim: ft=make

@@ -46,8 +46,12 @@ class DataSource(object):
         return self.instructions
 
 
+    def include_architecture_details(self):
+        return self.options.uops_xml is not None
+
+
     def get_architecture_details(self):
-        if self.architecture is None and self.options.uops_xml is not None:
+        if self.architecture is None and self.include_architecture_details():
             from lib.uops.loader import load
             from lib.uops import architecture_name
 
@@ -65,6 +69,28 @@ class DataSource(object):
             self.architecture = load(path)
 
         return self.architecture
+
+
+    def get_uopos_metadata(self):
+
+        import hashlib
+
+        def getsha512sum(path):
+            h = hashlib.sha512()
+            with open(path, 'rb') as f:
+                h.update(f.read())
+
+            return h.hexdigest()
+
+        class Metadata(object):
+            pass
+
+        
+        metadata = Metadata()
+        metadata.filename = self.options.uops_xml
+        metadata.sha512   = getsha512sum(metadata.filename)
+
+        return metadata
 
 
 class Application(object):
@@ -85,6 +111,10 @@ class Application(object):
         else:
             gen = Generator(self.options, self.datasource)
             gen.generate()
+
+            if self.options.deb_dir is not None:
+                from lib.deb import create_files
+                create_files(self.options, self.datasource)
 
 
     def dump_isa(self):
@@ -151,6 +181,10 @@ def get_options():
 
     parser.add_option('-l', '--create-symlinks', dest='create_symlinks', action='store_true', default=False,
         help="create symbolic links between intrinsics functions and CPU instructions"
+    )
+
+    parser.add_option('--deb', dest='deb_dir', default=None,
+        help="create extra files required to build .deb package (Debian, Ubuntu)"
     )
 
     parser.add_option('-v', '--verbose', dest='verbose', action='store_true', default=False,
