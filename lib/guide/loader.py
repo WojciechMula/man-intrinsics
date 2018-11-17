@@ -3,9 +3,10 @@ from model import *
 
 
 class Builder(object):
-    def __init__(self, intrinsic):
+    def __init__(self, intrinsic, filter_by_isa):
         assert intrinsic.tag == 'intrinsic'
         self.intrinsic = intrinsic
+        self.filter_by_isa = filter_by_isa
 
         self.children = {}
         self.parameters = []
@@ -26,8 +27,18 @@ class Builder(object):
 
     def build(self):
         e = Entry()
-        e.name          = self.intrinsic.attrib['name']
-        e.technology    = self.intrinsic.attrib['tech']
+
+        e.name       = self.intrinsic.attrib['name']
+        e.technology = self.intrinsic.attrib['tech']
+
+        e.cpuid = []
+        for item in self.cpuid:
+            tmp = item.text.split('/')
+            e.cpuid.extend(tmp)
+
+        e.cpuid = set(e.cpuid)
+        if not self.filter_by_isa(e.cpuid):
+            return None
 
         tmp = self.children['description'].text
         round_note_tag = '[round_note]'
@@ -60,13 +71,6 @@ class Builder(object):
             form = instr.attrib.get('form', '') # might not be present
             e.instructions.append((name, form))
 
-        e.cpuid = []
-        for item in self.cpuid:
-            tmp = item.text.split('/')
-            e.cpuid.extend(tmp)
-
-        e.cpuid = set(e.cpuid)
-
         tmp = ['%s %s' % (item.attrib['type'], item.attrib['varname']) for item in self.parameters]
         e.arguments = ', '.join(tmp)
         if e.arguments == 'void ':
@@ -80,7 +84,7 @@ def normalize_text(s):
     return ' '.join(tmp)
 
 
-def load(path):
+def load(path, filter_by_isa):
     data = ET.parse(path)
 
     db = Database()
@@ -90,7 +94,9 @@ def load(path):
     db.version = item.attrib['version']
 
     for intrinsic in data.getroot():
-        b = Builder(intrinsic)
-        db.entries.append(b.build())
+        b = Builder(intrinsic, filter_by_isa)
+        entry = b.build()
+        if entry:
+            db.entries.append(entry)
 
     return db

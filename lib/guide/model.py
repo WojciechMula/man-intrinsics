@@ -24,6 +24,14 @@ class Database(object):
         self.entries = []
 
 
+    def get_cpuids(self):
+        result = set()
+        for instr in self.entries:
+            result.update(instr.cpuid)
+
+        return result
+
+
     def __len__(self):
         return len(self.entries)
 

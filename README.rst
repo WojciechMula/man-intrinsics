@@ -2,6 +2,11 @@
             Manual pages for Intel Intrinsics Guide
 ================================================================================
 
+.. contents::
+
+Introduction
+--------------------------------------------------------------------------------
+
 Intel provides great and well designed site `Intrinsics Guide`__ that gives
 a programmer the full list of x86 intrinsics functions. I use the page often,
 but there are days when I'm offline and then miss ability to do quick searches.
@@ -14,6 +19,10 @@ The latter provides detailed parameters of CPU instructions for various
 architectures.
 
 __ http://uops.info/
+
+
+Generation
+--------------------------------------------------------------------------------
 
 *Intrinsics Guide* loads a huge XML file, just download that file and feed the
 generator. *uops.info* provides a direct link to download their database, also
@@ -28,7 +37,32 @@ or::
     $ ./main.py -g guide.xml -u uops.info.xml -o destination-dir
 
 
-See also:
+Limiting ISA
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+*Intrinsics Guide* lists all SIMD (and not only SIMD) instructions. However, MMX
+is not used anymore; likewise, KNC wasn't a very widespread technology.
+
+It's possible to select which instructions include or exclude. The option
+``--isa`` selects ISA to generate, the option ``--omit-isa`` excludes ISA.
+Both can be passed as many times as its needed and both accept a string,
+ISA symbol, as argument
+
+To obtain the list of meaningful ISA symbols use ``--dump-isa``.
+
+Examples::
+
+    $ ./main.py -g guide.xml --dump-isa
+    List of ISAs defined in guide.xml: ..., MMX, ..., SSE, SSE2, ...
+
+    # will generate man pages only for instrctions from SSE and SSE2
+    $ ./main.py -g guide.xml --isa=SSE --isa=SSE2 -o output-dir
+
+    # will generate man pages for all instructions except MMX
+    $ ./main.py -g guide.xml --omit-isa=SSE -o output-dir
+
+See also
+--------------------------------------------------------------------------------
 
 * https://github.com/Wunkolo/Intriman --- similar project, targeting more
   output formats
