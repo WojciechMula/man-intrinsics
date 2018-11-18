@@ -59,7 +59,7 @@ Examples::
     $ ./main.py -g guide.xml --isa=SSE --isa=SSE2 -o output-dir
 
     # will generate man pages for all instructions except MMX
-    $ ./main.py -g guide.xml --omit-isa=SSE -o output-dir
+    $ ./main.py -g guide.xml --omit-isa=MMX -o output-dir
 
 
 Limiting architectures
