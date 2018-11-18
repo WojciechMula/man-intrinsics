@@ -21,7 +21,7 @@ def load(path):
         name = instruction.attrib['string']
         log.debug("parsing %s", name)
         instr = parse_instruction(instruction)
-        if len(instr.measurements):
+        if len(instr.measurements) > 0:
             instr.cpuid = cpuid
             instructions.append(instr)
         else:

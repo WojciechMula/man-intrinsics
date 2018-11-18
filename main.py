@@ -168,6 +168,10 @@ def get_options():
         help="path to .xml from uops.info [otional]"
     )
 
+    parser.add_option('--uops-no-ports', dest='uops_ports', action='store_false', default=True,
+        help="do not include port allocation info"
+    )
+
     parser.add_option('--dump-arch', action='store_true', default=False,
         help="list available archs and exit"
     )
