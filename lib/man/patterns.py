@@ -74,9 +74,3 @@ CPUID_HEADER=R""".SH CPUID FLAGS
 CPUID_ENTRY=R""".br
 \fT%(flag)s\fP%(last)s
 """
-
-SEE_ALSO_HEADER=R""".SH SEE ALSO
-"""
-
-SEE_ALSO_ENTRY=R""".BR %(name)s (%(group)s)%(last)s
-"""

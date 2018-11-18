@@ -10,10 +10,6 @@ import logging
 log = logging.getLogger('main')
 
 
-class Struct(object):
-    pass
-
-
 class Generator(object):
     def __init__(self, options, datasource):
         self.options = options
@@ -23,17 +19,10 @@ class Generator(object):
 
         if datasource.include_architecture_details():
             from uops import Generate
-            gen = Generate(self.options, self.datasource)
-
-            def generate(entry):
-                return gen.generate(entry)
-
-            self.generate_arch_details = generate
+            gen_uops = Generate(self.options, self.datasource)
+            self.generate_arch_details = lambda entry: gen_uops.generate(entry)
         else:
-            def dummy(_):
-                return ''
-
-            self.generate_arch_details = dummy
+            self.generate_arch_details = lambda _: ''
 
         self.by_instruction = {}
         for entry in self.instr_db.entries:
@@ -42,6 +31,10 @@ class Generator(object):
                     self.by_instruction[instr] = [entry]
                 else:
                     self.by_instruction[instr].append(entry)
+
+        from seealso import Generate
+        gen = Generate(self.by_instruction)
+        self.generate_see_also = lambda entry: gen.generate(entry)
 
 
     def generate(self):
@@ -114,18 +107,7 @@ class Generator(object):
                 res += CPUID_ENTRY % tmp
 
         res += self.generate_arch_details(entry)
-
-        see_also = self.see_also(entry)
-        if see_also:
-            res += SEE_ALSO_HEADER
-            for i, name in enumerate(see_also):
-                if i + 1 < len(see_also):
-                    last = ','
-                else:
-                    last = ''
-
-                tmp = {'name': name, 'group': MAN_GROUP, 'last': last}
-                res += SEE_ALSO_ENTRY % tmp
+        res += self.generate_see_also(entry)
 
         return res
 
@@ -141,47 +123,4 @@ class Generator(object):
                     raise RuntimeError("'%s' already exists and is not a symlink" % target)
 
             os.symlink(source, target)
-
-
-    def see_also(self, entry):
-        s = Struct()
-        s.list = []
-
-        def get_entries(instruction):
-            try:
-                s.list.extend(self.by_instruction[instruction])
-            except KeyError:
-                pass
-
-        for instr, _ in entry.instructions:
-            get_entries(instr)
-
-            if instr.startswith('p') or instr.startswith('vp'):
-                # integer instructions
-
-                get_entries('vp' + instr[1:]) # try match pshufb [SSE] with vpshufb [AVX]
-                get_entries('v'  + instr[2:]) # or vice-versa
-
-            elif instr.endswith('ps') or instr.endswith('pd') or instr.endswith('ss'):
-                # floating point instructions
-                get_entries(instr[:-2] + 'pd') # addXX -> addpd
-                get_entries(instr[:-2] + 'ps') # addXX -> addpd
-                get_entries(instr[:-2] + 'ss') # addXX -> addss
-
-                if instr.startswith('v'):
-                    get_entries(instr[1:-2] + 'pd') # vaddXX -> addpd
-                    get_entries(instr[1:-2] + 'ps') # vaddXX -> addpd
-                    get_entries(instr[1:-2] + 'ss') # vaddXX -> addss
-                else:
-                    get_entries('v' + instr[:-2] + 'pd') # addXX -> vaddpd
-                    get_entries('v' + instr[:-2] + 'ps') # addXX -> vaddpd
-                    get_entries('v' + instr[:-2] + 'ss') # addXX -> vaddss
-
-
-        if len(s.list) <= 1:
-            return
-
-        list = sorted(set(s.list))
-
-        return [item.name for item in list if item.name != entry.name]
 
