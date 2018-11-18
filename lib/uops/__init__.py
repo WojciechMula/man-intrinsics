@@ -1,9 +1,9 @@
 def architecture_name(arch_code):
     names = {
-        #'CFL': '',
+        'CFL': 'Coffee Lake',
         #'SNM': '',
-        #'SNB': '',
-        #'KBL': '',
+        'SNB': 'Sandy Bridge',
+        'KBL': 'Kaby Lake',
         'IVB': 'Ivy Bridge',
         'NHM': 'Nehalem',
         'WSM': 'Westmere',
@@ -29,7 +29,9 @@ def normalize(string):
                    'SKL'])
 
     mapping = {
-        'IVY BRIDGE'    : 'IVB',
+        'COFFEELAKE'    : 'CFL',
+        'SANDYBRIDGE'   : 'SNB',
+        'KABYLAKE'      : 'KBL',
         'IVYBRIDGE'     : 'IVB',
         'NEHALEM'       : 'NHM',
         'WESTMERE'      : 'WSM',
