@@ -85,7 +85,7 @@ class DataSource(object):
         class Metadata(object):
             pass
 
-        
+
         metadata = Metadata()
         metadata.filename = self.options.uops_xml
         metadata.sha512   = getsha512sum(metadata.filename)
@@ -189,6 +189,10 @@ def get_options():
 
     parser.add_option('--deb', dest='deb_dir', default=None,
         help="create extra files required to build .deb package (Debian, Ubuntu)"
+    )
+
+    parser.add_option('--gzip', dest='gzip', action='store_true', default=False,
+        help="gzip man pages"
     )
 
     parser.add_option('-v', '--verbose', dest='verbose', action='store_true', default=False,

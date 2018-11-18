@@ -4,7 +4,7 @@ from os.path import exists
 from os.path import islink
 
 import os
-import codecs
+import gzip
 
 import logging
 log = logging.getLogger('main')
@@ -36,26 +36,36 @@ class Generator(object):
         gen = Generate(self.by_instruction)
         self.generate_see_also = lambda entry: gen.generate(entry)
 
+        self.created_files = []
+
 
     def generate(self):
         if True:
             log.info("Generating man pages in %s", self.options.target_dir)
-            self.generate_man_pages(self.options.target_dir)
+            self.generate_man_pages()
 
         if self.options.create_symlinks:
             log.info("Creating links to man pages for CPU instructions")
-            self.generate_links(self.options.target_dir)
+            self.generate_links()
 
 
-    def generate_man_pages(self, targetdir):
+    def generate_man_pages(self):
+        if self.options.gzip:
+            def open_file(path):
+                return gzip.open(path, 'wt')
+        else:
+            def open_file(path):
+                return open(path, 'wt')
+
         for i, entry in enumerate(self.instr_db.entries):
-            path = join(targetdir, entry.name) + '.' + MAN_GROUP
+            path = self.get_path(entry)
 
             log.debug("Generating %s (%d of %d)" % (path, i+1, len(self.instr_db)))
 
             text = self.generate_man_page(entry)
-            with codecs.open(path, 'wt', encoding='utf-8') as f:
-                f.write(text)
+            with open_file(path) as f:
+                f.write(unicode(text).encode('utf8'))
+                self.created_files.append(path)
 
 
     def generate_man_page(self, entry):
@@ -112,10 +122,10 @@ class Generator(object):
         return res
 
 
-    def generate_links(self, targetdir):
+    def generate_links(self):
         for instruction, entries in self.by_instruction.iteritems():
-            target = join(targetdir, instruction) + '.' + MAN_GROUP
-            source = entries[0].name + '.' + MAN_GROUP
+            target = self.get_linkpath(instruction)
+            source = self.get_filename(entries[0])
             if exists(target):
                 if islink(target):
                     os.unlink(target)
@@ -123,4 +133,25 @@ class Generator(object):
                     raise RuntimeError("'%s' already exists and is not a symlink" % target)
 
             os.symlink(source, target)
+
+
+    def get_linkpath(self, instruction):
+        path = join(self.options.target_dir, instruction) + '.' + MAN_GROUP
+        if self.options.gzip:
+            path += '.gz'
+
+        return path
+
+
+    def get_filename(self, entry):
+        name = '%s.%s' % (entry.name, MAN_GROUP)
+        if self.options.gzip:
+            name += '.gz'
+
+        return name
+
+
+    def get_path(self, entry):
+        return join(self.options.target_dir, self.get_filename(entry))
+
 
