@@ -48,6 +48,10 @@ def isa_to_cpuid(isa_string):
         return isa_string
     elif isa_string == 'PENTIUMMMX':
         return 'MMX'
+    elif isa_string == 'SSE4':
+        return 'SSE4.1'
+    elif isa_string == 'SSE42':
+        return 'SSE4.2'
     else:
         return isa_string
 
