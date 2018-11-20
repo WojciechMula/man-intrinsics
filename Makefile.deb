@@ -11,7 +11,7 @@ deb:
 	#rm -rf $(BUILDDIR)
 	mkdir -p $(MANDIR)
 	$(GENERATOR)
-	find $(MANDIR) -name '*.7' -exec chmod 444 '{}' \;
+	chmod 444 ${MANDIR}/*.7
 	dpkg-deb -b $(DEBDIR) .
 
 # vim: ft=make
