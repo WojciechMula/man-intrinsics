@@ -69,7 +69,7 @@ Examples::
     $ ./main.py -g guide.xml --dump-isa
     List of ISAs defined in guide.xml: ..., MMX, ..., SSE, SSE2, ...
 
-    # will generate man pages only for instrctions from SSE and SSE2
+    # will generate man pages only for instructions from SSE and SSE2
     $ ./main.py -g guide.xml --isa=SSE --isa=SSE2 -o output-dir
 
     # will generate man pages for all instructions except MMX
@@ -107,8 +107,8 @@ Then run::
     $ make -f Makefile-deb deb
 
 It will download xml files, create special .deb files (control, postinst,
-postrm) and finally build the package ``man-intrisics-<version>.deb``.
-You can install the .deb file with ``dpkg -i man-intrisics-<version>.deb``.
+postrm) and finally build the package ``man-intrinsics-<version>.deb``.
+You can install the .deb file with ``dpkg -i man-intrinsics-<version>.deb``.
 
 
 Building .rpm packages
