@@ -2,6 +2,7 @@ from patterns import *
 from os.path import join
 from os.path import exists
 from os.path import islink
+from os.path import basename
 
 import os
 import gzip
@@ -14,7 +15,6 @@ class Generator(object):
     def __init__(self, options, datasource):
         self.options = options
         self.datasource = datasource
-
         self.instr_db = datasource.get_instructions()
 
         if datasource.include_architecture_details():
@@ -47,6 +47,9 @@ class Generator(object):
         if self.options.create_symlinks:
             log.info("Creating links to man pages for CPU instructions")
             self.generate_links()
+
+
+        return [basename(path) for path in self.created_files]
 
 
     def generate_man_pages(self):
@@ -133,6 +136,7 @@ class Generator(object):
                     raise RuntimeError("'%s' already exists and is not a symlink" % target)
 
             os.symlink(source, target)
+            self.created_files.append(target)
 
 
     def get_linkpath(self, instruction):

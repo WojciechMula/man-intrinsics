@@ -2,6 +2,10 @@
 import textwrap
 import logging
 
+from lib.deb import create_files as create_deb_files
+from lib.rpm import create_spec_file
+from os.path import basename
+
 log = logging.getLogger('main')
 
 
@@ -110,11 +114,13 @@ class Application(object):
                 self.dump_arch()
         else:
             gen = Generator(self.options, self.datasource)
-            gen.generate()
+            generated_files = gen.generate()
 
             if self.options.deb_dir is not None:
-                from lib.deb import create_files
-                create_files(self.options, self.datasource)
+                create_deb_files(self.options, self.datasource)
+
+            if self.options.rpm_spec_dir:
+                create_spec_file(self.options, self.datasource, generated_files)
 
 
     def dump_isa(self):
@@ -188,7 +194,11 @@ def get_options():
     )
 
     parser.add_option('--deb', dest='deb_dir', default=None,
-        help="create extra files required to build .deb package (Debian, Ubuntu)"
+        help="create extra files required to build a .deb package (Debian, Ubuntu)"
+    )
+
+    parser.add_option('--rpm-spec-dir', dest='rpm_spec_dir', default=None,
+        help="create a .spec file required to build an .rpm package (RedHat, Fedora)"
     )
 
     parser.add_option('--gzip', dest='gzip', action='store_true', default=False,
