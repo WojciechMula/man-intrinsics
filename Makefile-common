@@ -1,0 +1,20 @@
+# man pages are small (up to 7MB), better use a ramdisc 
+TMPDIR=/dev/shm/
+MKDIR=mkdir -p
+
+DATA_XML=data-latest.xml
+UOPS_XML=instructions.xml
+XMLFILES=$(DATA_XML) $(UOPS_XML)
+
+GENERATOR=./main.py $(MANOPTIONS) -g $(DATA_XML) -u $(UOPS_XML)
+
+INTEL_DOWNLOAD_URL=https://software.intel.com/sites/landingpage/IntrinsicsGuide/files/$(DATA_XML)
+UOPS_DOWNLOAD_URL=http://uops.info/$(UOPS_XML)
+
+download: $(XMLFILES)
+
+$(DATA_XML):
+	wget $(INTEL_DOWNLOAD_URL)
+
+$(UOPS_XML):
+	wget $(UOPS_DOWNLOAD_URL)
