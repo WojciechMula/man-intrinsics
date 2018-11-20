@@ -15,8 +15,8 @@ __ https://software.intel.com/sites/landingpage/IntrinsicsGuide/.
 
 This repository contains a python script which creates a set of Unix manual
 pages. It uses data from *Intrinsics Guide* and optionally from `uops.info`__.
-The latter provides detailed parameters of CPU instructions for various
-architectures.
+The latter provides detailed parameters of CPU instructions (latency,
+throughput, port usage) for various Intel architectures.
 
 __ http://uops.info/
 
@@ -26,15 +26,29 @@ Generation
 
 *Intrinsics Guide* loads a huge XML file, just download that file and feed the
 generator. *uops.info* provides a direct link to download their database, also
-in XML format.
+in XML format. You may use ``make`` to download these .xml files into the
+current directory::
 
-Invocation::
+    $ make -f Makefile-common download
 
-    $ ./main.py -g guide.xml -o destination-dir
+Two files should be available: ``data-latest.xml`` (from *Intrinsics Guide*)
+and ``instructions.xml`` (from *uops.info*).
+
+Then, to create man pages, you might run either::
+
+    $ ./main.py -g data-latest.xml -o destination-dir
 
 or::
 
-    $ ./main.py -g guide.xml -u uops.info.xml -o destination-dir
+    $ ./main.py -g data-latest.xml -u instructions.xml -o destination-dir
+
+The first invocation creates basic version of man pages (instruction name,
+description, etc.), the second one includes also tables with latency,
+throughput.
+
+Please run the script ``main.py`` with option ``--help`` to find out more
+options; two most important features are described in the following
+subsections.
 
 
 Limiting ISA
@@ -46,7 +60,7 @@ MMX is not used anymore; likewise, KNC wasn't a very widespread technology.
 It's possible to select which instructions include or exclude. The option
 ``--isa`` selects ISA to generate, the option ``--omit-isa`` excludes ISA.
 Both can be passed as many times as it's needed and both accept a string,
-ISA symbol, as argument
+an ISA symbol, as argument
 
 To obtain the list of meaningful ISA symbols use ``--dump-isa``.
 
@@ -71,7 +85,7 @@ some of them outdated. It's possible to select which architecture include
 The options can be passed as many times as it's needed, both accept a string,
 arch name or symbol.
 
-The list of symbol and names is displayed by option ``--dump-arch``.
+The list of symbols and names is displayed by option ``--dump-arch``.
 
 Examples::
 
@@ -85,24 +99,30 @@ Examples::
 Building .deb packages
 --------------------------------------------------------------------------------
 
-To create special .deb files (control, postinst, postrm) pass option ``--deb``
-with the destination directory. Please refer to sample ``Makefile.deb`` for details.
-
-Example::
-
-    $ ln -s your-guide.xml guide.xml
-    $ ln -s your-uops.xml uops.xml
+To create a .deb package you need ``dpkg-deb`` program installed.
+Then run::
 
     # optionally set extra options for script
     $ export MANOPTIONS=''
+    $ make -f Makefile-deb deb
 
-    $ make -f Makefile.deb
-    # it'll take some time
+It will download xml files, create special .deb files (control, postinst,
+postrm) and finally build the package ``man-intrisics-<version>.deb``.
+You can install the .deb file with ``dpkg -i man-intrisics-<version>.deb``.
 
-    $ ls man*.deb
-    man-intrinsics_<guide-version>_all.deb
 
-You can install the deb file with ``dpkg -i file.deb``.
+Building .rpm packages
+--------------------------------------------------------------------------------
+
+To create an .rpm package you need ``rpmbuild`` program installed.
+Then run::
+
+    # optionally set extra options for script
+    $ export MANOPTIONS=''
+    $ make -f Makefile-rpm rpm
+
+It will download xml files, create a .spec file and finally build the package;
+``make`` will print the .rpm's path.
 
 
 See also
