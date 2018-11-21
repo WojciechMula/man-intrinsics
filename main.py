@@ -2,8 +2,8 @@
 import textwrap
 import logging
 
-from lib.deb import create_files as create_deb_files
-from lib.rpm import create_spec_file
+from lib.packages.deb import create_files as create_deb_files
+from lib.packages.rpm import create_spec_file
 from os.path import basename
 
 log = logging.getLogger('main')
