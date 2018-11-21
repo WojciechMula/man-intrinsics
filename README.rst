@@ -29,7 +29,7 @@ generator. *uops.info* provides a direct link to download their database, also
 in XML format. You may use ``make`` to download these .xml files into the
 current directory::
 
-    $ make -f Makefile-common download
+    $ make download
 
 Two files should be available: ``data-latest.xml`` (from *Intrinsics Guide*)
 and ``instructions.xml`` (from *uops.info*).
@@ -104,7 +104,7 @@ Then run::
 
     # optionally set extra options for script
     $ export MANOPTIONS=''
-    $ make -f Makefile-deb deb
+    $ make deb
 
 It will download xml files, create special .deb files (control, postinst,
 postrm) and finally build the package ``man-intrinsics-<version>.deb``.
@@ -119,7 +119,7 @@ Then run::
 
     # optionally set extra options for script
     $ export MANOPTIONS=''
-    $ make -f Makefile-rpm rpm
+    $ make rpm
 
 It will download xml files, create a .spec file and finally build the package;
 ``make`` will print the .rpm's path.
