@@ -16,7 +16,7 @@ class Package(object):
         details = []
 
         instr_db = self.datasource.get_instructions()
-        guide = "Instruction descriptions from Intel Intrinsics Guide: version %s, data %s." % \
+        guide = "Instruction descriptions from Intel Intrinsics Guide: version %s, date %s." % \
                  (instr_db.version, instr_db.date)
 
         if len(self.options.enabled_instruction_sets) > 0:
@@ -28,8 +28,8 @@ class Package(object):
         details.extend(textwrap.wrap(guide))
 
         if self.datasource.include_architecture_details():
-            metadata = self.datasource.get_uopos_metadata()
-            arch = "Instruction architecture details from uops.info, file SHA-1 %s." % (metadata.sha512)
+            date = self.datasource.get_uopos_date()
+            arch = "Instruction architecture details from uops.info: date %s." % (date)
 
             if len(self.options.enabled_architectures) > 0:
                 tmp = set((normalize(name_or_symbol) for name_or_symbol in self.options.enabled_architectures))
