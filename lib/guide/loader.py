@@ -88,6 +88,12 @@ def normalize_text(s):
     return ' '.join(tmp)
 
 
+def normalize_date(mdy_date):
+    m, d, y = mdy_date.split('/')
+
+    return '%s-%s-%s' % (y, m, d)
+
+
 def load(path, filter_by_isa):
     log.debug("Loading data from %s", path)
     data = ET.parse(path)
@@ -95,7 +101,7 @@ def load(path, filter_by_isa):
     db = Database()
 
     item = data.getiterator('intrinsics_list')[0]
-    db.date    = item.attrib['date']
+    db.date    = normalize_date(item.attrib['date'])
     db.version = item.attrib['version']
 
     log.debug("Parsing instructions")
