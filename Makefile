@@ -65,3 +65,7 @@ rpm: $(XMLFILES)
 	rpmbuild -bb $(SPECPATH) --define '_topdir ${RPMROOTDIR}'
 	@find $(RPMDIRS) -name '*.rpm' -printf 'RPM path is "%p"\n'
 
+
+# --- test ------------------------------------------
+
+test: deb rpm
