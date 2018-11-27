@@ -25,7 +25,7 @@ class Application(object):
 
 
     def run(self):
-        from lib.man.generate import Generator
+        from lib.man.generator import Generator
 
         if self.options.dump_isa or self.options.dump_arch:
             if self.options.dump_isa:
