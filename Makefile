@@ -69,3 +69,6 @@ rpm: $(XMLFILES)
 # --- test ------------------------------------------
 
 test: deb rpm
+
+clean:
+	find -name '*.pyc' -print -delete
