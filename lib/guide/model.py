@@ -1,6 +1,7 @@
 class Entry(object):
     __slots__ = (
         'name',
+        'unique_name',
         'rettype',
         'include',
         'description',
@@ -12,9 +13,6 @@ class Entry(object):
         'cpuid',
         'has_round_note',
     )
-
-    def __init__(self):
-        pass
 
 
 class Database(object):

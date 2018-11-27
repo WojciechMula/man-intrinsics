@@ -77,7 +77,7 @@ class Builder(object):
 
         tmp = ['%s %s' % (item.attrib['type'], item.attrib['varname']) for item in self.parameters]
         e.arguments = ', '.join(tmp)
-        if e.arguments == 'void ':
+        if e.arguments == 'void ': # that's silly
             e.arguments = ''
 
         return e

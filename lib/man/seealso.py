@@ -7,8 +7,9 @@ class Struct(object):
 
 
 class Generate(object):
-    def __init__(self, by_instruction):
+    def __init__(self, by_instruction, duplicated_names):
         self.by_instruction = by_instruction
+        self.duplicated_names = duplicated_names
 
 
     def generate(self, entry):
@@ -42,6 +43,14 @@ class Generate(object):
                 s.list.extend(self.by_instruction[instruction])
             except KeyError:
                 pass
+
+        try:
+            for item in self.duplicated_names[entry.name]:
+                if entry.unique_name != item.unique_name:
+                    s.list.append(item)
+        except KeyError:
+            pass
+
 
         for instr, _ in entry.instructions:
             get_entries(instr)

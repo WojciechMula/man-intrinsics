@@ -24,6 +24,8 @@ class Generator(object):
         else:
             self.generate_arch_details = lambda _: ''
 
+        self.__update_unique_names()
+
         self.by_instruction = {}
         for entry in self.instr_db.entries:
             for instr, _ in entry.instructions:
@@ -33,10 +35,29 @@ class Generator(object):
                     self.by_instruction[instr].append(entry)
 
         from seealso import Generate
-        gen = Generate(self.by_instruction)
+        gen = Generate(self.by_instruction, self.duplicated_names)
         self.generate_see_also = lambda entry: gen.generate(entry)
 
         self.created_files = []
+
+
+    def __update_unique_names(self):
+        d = {}
+        for entry in self.instr_db.entries:
+            entry.unique_name = entry.name # most instructions do not repeat
+            key = entry.name
+            if key not in d:
+                d[key] = []
+
+            d[key].append(entry)
+
+        self.duplicated_names = dict(((key, list) for key, list in d.iteritems() if len(list) > 1))
+
+        # fixup duplicated names: append technology tag
+        for name, list in self.duplicated_names.iteritems():
+            for index, entry in enumerate(list):
+                if index > 0:
+                    entry.unique_name = '%s-%s' % (entry.unique_name, entry.technology.lower())
 
 
     def generate(self):
@@ -148,7 +169,7 @@ class Generator(object):
 
 
     def get_filename(self, entry):
-        name = '%s.%s' % (entry.name, MAN_GROUP)
+        name = '%s.%s' % (entry.unique_name, MAN_GROUP)
         if self.options.gzip:
             name += '.gz'
 
