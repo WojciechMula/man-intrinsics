@@ -2,10 +2,6 @@ from seealso_patterns import *
 from patterns import MAN_GROUP
 
 
-class Struct(object):
-    pass
-
-
 class Generate(object):
     def __init__(self, by_instruction, duplicated_names):
         self.by_instruction = by_instruction
@@ -13,7 +9,8 @@ class Generate(object):
 
 
     def generate(self, entry):
-        see_also = self.see_also(entry)
+        p = Finder(entry, self.by_instruction, self.duplicated_names)
+        see_also = p.find()
         if not see_also:
             return ''
 
@@ -34,52 +31,74 @@ class Generate(object):
         return res
 
 
-    def see_also(self, entry):
-        s = Struct()
-        s.list = []
+class Finder(object):
+    def __init__(self, entry, by_instruction, duplicated_names):
 
-        def get_entries(instruction):
+        self.by_instruction = by_instruction
+        self.duplicated_names = duplicated_names
+        self.entry = entry
+        self.list  = []
+
+
+    def find(self):
+        self.find_duplicates()
+        self.find_by_instruction()
+
+        if len(self.list) <= 1:
+            return
+
+        list = sorted(set(self.list))
+
+        return [entry.unique_name for entry in list if entry.unique_name != self.entry.unique_name]
+
+
+    def find_duplicates(self):
+        try:
+            dups = self.duplicated_names[self.entry.name]
+        except KeyError:
+            return
+
+        print dups
+        for entry in dups:
+            if entry.unique_name != self.entry.unique_name:
+                self.list.append(entry)
+
+
+    def find_by_instruction(self):
+        for instruction in self.__get_instructions():
             try:
-                s.list.extend(self.by_instruction[instruction])
+                self.list.extend(self.by_instruction[instruction])
             except KeyError:
                 pass
 
-        try:
-            for item in self.duplicated_names[entry.name]:
-                if entry.unique_name != item.unique_name:
-                    s.list.append(item)
-        except KeyError:
-            pass
+
+    def __get_instructions(self):
+        for instruction, _ in self.entry.instructions:
+            yield instruction
+            for similar in self.__similar_instructions(instruction):
+                yield similar
 
 
-        for instr, _ in entry.instructions:
-            get_entries(instr)
+    def __similar_instructions(self, instr):
 
-            if instr.startswith('p') or instr.startswith('vp'):
-                # integer instructions
+        if instr.startswith('p') or instr.startswith('vp'):
+            # integer instructions
+            yield 'vp' + instr[1:] # try match pshufb [SSE] with vpshufb [AVX]
+            yield 'v'  + instr[2:] # or vice-versa
 
-                get_entries('vp' + instr[1:]) # try match pshufb [SSE] with vpshufb [AVX]
-                get_entries('v'  + instr[2:]) # or vice-versa
+        elif instr.endswith('ps') or instr.endswith('pd') or instr.endswith('ss'):
+            # floating point instructions
+            yield instr[:-2] + 'pd' # addXX -> addpd
+            yield instr[:-2] + 'ps' # addXX -> addpd
+            yield instr[:-2] + 'ss' # addXX -> addss
 
-            elif instr.endswith('ps') or instr.endswith('pd') or instr.endswith('ss'):
-                # floating point instructions
-                get_entries(instr[:-2] + 'pd') # addXX -> addpd
-                get_entries(instr[:-2] + 'ps') # addXX -> addpd
-                get_entries(instr[:-2] + 'ss') # addXX -> addss
-
-                if instr.startswith('v'):
-                    get_entries(instr[1:-2] + 'pd') # vaddXX -> addpd
-                    get_entries(instr[1:-2] + 'ps') # vaddXX -> addpd
-                    get_entries(instr[1:-2] + 'ss') # vaddXX -> addss
-                else:
-                    get_entries('v' + instr[:-2] + 'pd') # addXX -> vaddpd
-                    get_entries('v' + instr[:-2] + 'ps') # addXX -> vaddpd
-                    get_entries('v' + instr[:-2] + 'ss') # addXX -> vaddss
+            if instr.startswith('v'):
+                yield instr[1:-2] + 'pd' # vaddXX -> addpd
+                yield instr[1:-2] + 'ps' # vaddXX -> addpd
+                yield instr[1:-2] + 'ss' # vaddXX -> addss
+            else:
+                yield 'v' + instr[:-2] + 'pd' # addXX -> vaddpd
+                yield 'v' + instr[:-2] + 'ps' # addXX -> vaddpd
+                yield 'v' + instr[:-2] + 'ss' # addXX -> vaddss
 
 
-        if len(s.list) <= 1:
-            return
-
-        list = sorted(set(s.list))
-
-        return [item.name for item in list if item.name != entry.name]
