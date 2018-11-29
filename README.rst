@@ -125,6 +125,15 @@ It will download xml files, create a .spec file and finally build the package;
 ``make`` will print the .rpm's path.
 
 
+Demo
+--------------------------------------------------------------------------------
+
+.. image:: img/example.png
+    :scale: 50%
+    :align: center
+    :alt:   screenshot of 'man _mm_andnot_si128'
+
+
 See also
 --------------------------------------------------------------------------------
 
