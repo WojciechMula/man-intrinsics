@@ -42,6 +42,7 @@ deb: $(XMLFILES)
 	$(GENERATOR) --gzip -o $(MANDIR) --deb $(DEBDIR)
 	chmod 444 ${MANDIR}/*.7*
 	dpkg-deb -b $(DEBDIR) .
+	@find . -name '*.deb' -printf "Install package with:\n\tdpkg -i %p\n"
 
 # --- rpm ------------------------------------------
 
@@ -63,7 +64,9 @@ rpm: $(XMLFILES)
 	$(MKDIR) $(RPMDIRS) $(OUTDIR)
 	$(GENERATOR) --gzip --rpm-spec-dir=$(SPECDIR) -o $(OUTDIR)
 	rpmbuild -bb $(SPECPATH) --define '_topdir ${RPMROOTDIR}'
-	@find $(RPMDIRS) -name '*.rpm' -printf 'RPM path is "%p"\n'
+	cp `find $(RPMDIRS) -name '*.rpm'` .
+	@find . -name '*.rpm' -printf "Install package with:\n\trpm -i %p\n"
+
 
 
 # --- test ------------------------------------------
