@@ -21,7 +21,49 @@ throughput, port usage) for various Intel architectures.
 __ http://uops.info/
 
 
-Generation
+Installation
+--------------------------------------------------------------------------------
+
+The easiest way to install man pages is build a package suitable for your
+system. Building man pages does not require root rights, only installation of
+package requires admistrator rights.
+
+The ``MANOPTIONS`` variable sets extra options for script, please read the `next
+section <generation_>`_ or run program ``main.py -h``.
+
+
+Building .deb packages
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To create a .deb package you need ``dpkg-deb`` program installed.  Then run::
+
+    # optionally set extra options for script
+    $ export MANOPTIONS=''
+    $ make deb
+
+It will download xml files, create special .deb files (control, postinst,
+postrm) and finally build the package ``man-intrinsics-<version>_all.deb``.
+You can install it with ``dpkg -i man-intrinsics-<version>_all.deb``.
+
+
+Building .rpm packages
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To create an .rpm package you need ``rpmbuild`` program installed.
+Then run::
+
+    # optionally set extra options for script
+    $ export MANOPTIONS=''
+    $ make rpm
+
+It will download xml files, create a .spec file and finally build the package
+``man-intrinsics-<version>-1.noarch.rpm``. 
+You can install it with ``man-intrinsics-<version>-1.noarch.rpm``. 
+
+
+.. _generation:
+
+Manual generation
 --------------------------------------------------------------------------------
 
 *Intrinsics Guide* loads a huge XML file, just download that file and feed the
@@ -94,35 +136,6 @@ Examples::
 
     # will exclude details for Westmere
     $ ./main.py -g guide.xml -o output-dir --omit-arch=Westmere
-
-
-Building .deb packages
---------------------------------------------------------------------------------
-
-To create a .deb package you need ``dpkg-deb`` program installed.
-Then run::
-
-    # optionally set extra options for script
-    $ export MANOPTIONS=''
-    $ make deb
-
-It will download xml files, create special .deb files (control, postinst,
-postrm) and finally build the package ``man-intrinsics-<version>.deb``.
-You can install the .deb file with ``dpkg -i man-intrinsics-<version>.deb``.
-
-
-Building .rpm packages
---------------------------------------------------------------------------------
-
-To create an .rpm package you need ``rpmbuild`` program installed.
-Then run::
-
-    # optionally set extra options for script
-    $ export MANOPTIONS=''
-    $ make rpm
-
-It will download xml files, create a .spec file and finally build the package;
-``make`` will print the .rpm's path.
 
 
 Demo
