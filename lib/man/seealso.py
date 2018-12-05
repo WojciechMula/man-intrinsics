@@ -58,7 +58,6 @@ class Finder(object):
         except KeyError:
             return
 
-        print dups
         for entry in dups:
             if entry.unique_name != self.entry.unique_name:
                 self.list.append(entry)
