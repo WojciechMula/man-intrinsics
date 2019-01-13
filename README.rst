@@ -28,8 +28,13 @@ The easiest way to install man pages is build a package suitable for your
 system. Building man pages does not require root rights, only installation of
 package requires admistrator rights.
 
+
 The ``MANOPTIONS`` variable sets extra options for script, please read the `next
 section <generation_>`_ or run program ``main.py -h``.
+
+There's also `PKGBUILD for Arch`__ prepared by **@pimzero**.
+
+__ https://github.com/pimzero
 
 
 Building .deb packages
