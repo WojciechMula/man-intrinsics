@@ -26,7 +26,7 @@ Installation
 
 The easiest way to install man pages is build a package suitable for your
 system. Building man pages does not require root rights, only installation of
-package requires admistrator rights.
+package requires administrator rights.
 
 
 The ``MANOPTIONS`` variable sets extra options for script, please read the `next
@@ -61,8 +61,8 @@ Then run::
     $ export MANOPTIONS=''
     $ make rpm
 
-It will download xml files, create a .spec file and finally build the package
-``man-intrinsics-<version>-1.noarch.rpm``. 
+It will download XML files, create a .spec file and finally build the package
+``man-intrinsics-<version>-1.noarch.rpm``.
 You can install it with ``man-intrinsics-<version>-1.noarch.rpm``. 
 
 
@@ -141,6 +141,17 @@ Examples::
 
     # will exclude details for Westmere
     $ ./main.py -g guide.xml -o output-dir --omit-arch=Westmere
+
+
+Names of CPU instructions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The option ``-l``/``--create-symlinks`` adds symbolic links to names of CPU
+instructions, thanks to that it's easy to find out which intrinsics function is
+mapped to given instruction. For instance ``man vpandn`` will bring the manual
+page for ``_mm256_and_si256``.
+
+By default this option is disabled.
 
 
 Demo
