@@ -95,19 +95,19 @@ def parse_measurements(architecture):
 
 def parse_measurement(measurement):
     data = Measurement()
-    data.throughput   = optional_float(measurement.attrib, 'throughput')
-    data.total_uops   = int(measurement.attrib['total_uops'])
+    data.throughput   = optional_float(measurement.attrib, 'TP')
+    data.total_uops   = int(measurement.attrib['uops'])
     data.uops_details = parse_ports(measurement)
 
     # we're not dig into latency conditions, just record cycles
     tmp = set()
     for latency in measurement.getiterator('latency'):
-        try:
+        if 'cycles' in latency.attrib:
             cycles = int(latency.attrib['cycles'])
             tmp.add(cycles)
-        except KeyError:
-            min = int(latency.attrib['minCycles'])
-            max = int(latency.attrib['maxCycles'])
+        elif 'min_cycles' in latency.attrib and 'max_cycles' in latency.attrib:
+            min = int(latency.attrib['min_cycles'])
+            max = int(latency.attrib['max_cycles'])
             for cycles in range(min, max+1):
                 tmp.add(cycles)
 
@@ -121,25 +121,39 @@ def parse_iaca(iaca):
     data = IACAMeasurements()
     data.version      = float(iaca.attrib['version'])
     data.latency      = optional_int(iaca.attrib, 'latency')
-    data.throughput   = optional_float(iaca.attrib, 'throughput')
-    data.total_uops   = int(iaca.attrib['total_uops'])
+    data.throughput   = optional_float(iaca.attrib, 'TP')
+    data.total_uops   = int(iaca.attrib['uops'])
     data.uops_details = parse_ports(iaca)
 
     return data
 
 
-
-
 def parse_ports(tag):
     l = []
+    try:
+        ports_string = tag.attrib['ports']
+    except KeyError:
+        return tuple()
+
+    # we have something like "1*p06+1*p23+1*p237+1*p4"
+    for seq in ports_string.split('+'):
+        uops, ports = seq.split('*')
+
+        d = PortDetail()
+        d.uops = int(uops)
+        if ports.startswith('FP'):
+            d.ports = ports[2:]
+        elif ports.startswith('p'):
+            d.ports = ports[1:]
+        else:
+            assert False, "unsupported syntax: %s" % ports
+
+        l.append(d)
+
     for attr, value in tag.attrib.iteritems():
         if not attr.startswith('port'):
             continue
 
-        d = PortDetail()
-        d.ports = attr[4:]
-        d.uops  = int(value)
-        l.append(d)
 
     return tuple(l)
 
