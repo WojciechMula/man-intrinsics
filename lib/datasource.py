@@ -1,8 +1,6 @@
 import logging
 log = logging.getLogger('main')
 
-import re
-
 
 from guide.loader import load as load_guide
 from uops.loader import load as load_uops
@@ -56,24 +54,6 @@ class DataSource(object):
             self.architecture = load_uops(path)
 
         return self.architecture
-
-
-    def get_uopos_date(self):
-
-        def grep():
-            regex = re.compile(r'Created: (\d{4})/(\d{2})/(\d{2})')
-            with open(self.options.uops_xml, 'rt') as f:
-                for line in f:
-                    m = regex.search(line)
-                    if m:
-                        return m.groups()
-        
-        ret = grep()
-        if ret:
-            y, m, d = ret
-            return '%s-%s-%s' % (y, m, d)
-        else:
-            return '<unknown>'
 
 
 def get_filter_by_isa(options):

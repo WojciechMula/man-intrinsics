@@ -13,7 +13,9 @@ def load(path):
 
     log.debug("Processing instructions...")
     instructions = []
-    for instruction in data.getroot().getiterator('instruction'):
+    root = data.getroot()
+    date = root.attrib.get('date', '<unknown>')
+    for instruction in root.getiterator('instruction'):
         cpuid = isa_to_cpuid(instruction.attrib['isa-set'])
         if cpuid is None:
             continue
@@ -27,7 +29,7 @@ def load(path):
         else:
             log.debug("no measurements for %s" % name)
 
-    return InstructionsDB(instructions)
+    return InstructionsDB(instructions, date)
 
 
 def isa_to_cpuid(isa_string):

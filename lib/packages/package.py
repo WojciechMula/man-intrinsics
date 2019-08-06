@@ -28,7 +28,7 @@ class Package(object):
         details.extend(textwrap.wrap(guide))
 
         if self.datasource.include_architecture_details():
-            date = self.datasource.get_uopos_date()
+            date = self.datasource.architecture.date
             arch = "Instruction architecture details from uops.info: date %s." % (date)
 
             if len(self.options.enabled_architectures) > 0:

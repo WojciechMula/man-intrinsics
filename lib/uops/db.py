@@ -1,5 +1,5 @@
 class InstructionsDB(object):
-    def __init__(self, instructions):
+    def __init__(self, instructions, date):
         grouped = {}
         architectures = set()
         for instr in instructions:
@@ -12,6 +12,7 @@ class InstructionsDB(object):
 
         self.db = grouped
         self.architectures = architectures
+        self.date = date
 
 
     def get_architectures(self):
