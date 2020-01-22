@@ -46,7 +46,7 @@ To create a .deb package you need ``dpkg-deb`` program installed.  Then run::
     $ export MANOPTIONS=''
     $ make deb
 
-It will download xml files, create special .deb files (control, postinst,
+It will download XML files, create special .deb files (control, postinst,
 postrm) and finally build the package ``man-intrinsics-<version>_all.deb``.
 You can install it with ``dpkg -i man-intrinsics-<version>_all.deb``.
 
@@ -168,5 +168,6 @@ See also
 
 * https://github.com/Wunkolo/Intriman --- similar project, targeting more
   output formats
+* https://github.com/zwegner/x86-info-term --- TUI for Intrinsics Guide and uops.info
 * https://github.com/HJLebbink/asm-dude/wiki --- data extracted from the
   official Intel documents
