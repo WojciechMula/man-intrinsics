@@ -67,7 +67,7 @@ class Builder(object):
             e.operation = None
 
         e.include = self.children['header'].text
-        e.rettype = self.intrinsic.attrib['rettype']
+        e.rettype = self.children['return'].attrib['type']
 
         e.instructions = []
         for instr in self.instructions:
@@ -75,7 +75,8 @@ class Builder(object):
             form = instr.attrib.get('form', '') # might not be present
             e.instructions.append((name, form))
 
-        tmp = ['%s %s' % (item.attrib['type'], item.attrib['varname']) for item in self.parameters]
+        tmp = ['%s %s' % (item.attrib['type'], item.attrib.get('varname', ''))
+               for item in self.parameters]
         e.arguments = ', '.join(tmp)
         if e.arguments == 'void ': # that's silly
             e.arguments = ''

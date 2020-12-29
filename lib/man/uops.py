@@ -37,7 +37,7 @@ class Generate(object):
                     data = {
                         'architecture'  : arch_fmt,
                         'latency'       : format_latency(measurement.latency),
-                        'throughput'    : measurement.throughput,
+                        'throughput'    : format_throughput(measurement.throughput),
                         'uops'          : measurement.total_uops,
                         'uops_details'  : format_port_details(measurement.uops_details),
                     }
@@ -117,3 +117,9 @@ def format_port_details(port_details):
 
     return ' '.join('p%s:%d' % (pd.ports, pd.uops) for pd in port_details)
 
+
+def format_throughput(throughput):
+    if throughput is None:
+        return '\-'
+
+    return '%0.2f' % throughput
