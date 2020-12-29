@@ -21,10 +21,10 @@ ARCH_TABLE_HEADER_SHORT="""%s
 Architecture\tLatency\tThroughput\tuops
 """
 
-ARCH_TABLE_ROW_LONG="""%(architecture)s\t%(latency)s\t%(throughput)0.2f\t%(uops)d\t%(uops_details)s
+ARCH_TABLE_ROW_LONG="""%(architecture)s\t%(latency)s\t%(throughput)s\t%(uops)d\t%(uops_details)s
 """
 
-ARCH_TABLE_ROW_SHORT="""%(architecture)s\t%(latency)s\t%(throughput)0.2f\t%(uops)d
+ARCH_TABLE_ROW_SHORT="""%(architecture)s\t%(latency)s\t%(throughput)s\t%(uops)d
 """
 
 ARCH_TABLE_END=""".TE

@@ -97,7 +97,7 @@ def parse_measurements(architecture):
 
 def parse_measurement(measurement):
     data = Measurement()
-    data.throughput   = optional_float(measurement.attrib, 'TP')
+    data.throughput   = optional_float(measurement.attrib, 'TP_ports')
     data.total_uops   = int(measurement.attrib['uops'])
     data.uops_details = parse_ports(measurement)
 
