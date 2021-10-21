@@ -18,7 +18,7 @@ XMLFILES=$(DATA_XML) $(UOPS_XML)
 
 GENERATOR=./main.py $(MANOPTIONS) -g $(DATA_XML) -u $(UOPS_XML)
 
-INTEL_DOWNLOAD_URL=https://software.intel.com/sites/landingpage/IntrinsicsGuide/files/$(DATA_XML)
+INTEL_DOWNLOAD_URL=https://software.intel.com/content/dam/develop/public/us/en/include/intrinsics-guide/$(DATA_XML)
 UOPS_DOWNLOAD_URL=http://uops.info/$(UOPS_XML)
 
 # --- common ---------------------------------------
@@ -26,10 +26,10 @@ UOPS_DOWNLOAD_URL=http://uops.info/$(UOPS_XML)
 download: $(XMLFILES)
 
 $(DATA_XML):
-	wget $(INTEL_DOWNLOAD_URL)
+	curl -fsSLO $(INTEL_DOWNLOAD_URL)
 
 $(UOPS_XML):
-	wget $(UOPS_DOWNLOAD_URL)
+	curl -fsSLO $(UOPS_DOWNLOAD_URL)
 
 # --- deb ------------------------------------------
 
