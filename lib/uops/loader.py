@@ -15,7 +15,7 @@ def load(path):
     instructions = []
     root = data.getroot()
     date = root.attrib.get('date', '<unknown>')
-    for instruction in root.getiterator('instruction'):
+    for instruction in root.iter('instruction'):
         cpuid = isa_to_cpuid(instruction.attrib['isa-set'])
         if cpuid is None:
             continue
@@ -64,7 +64,7 @@ def parse_instruction(instruction):
     data.form = instruction.attrib['string'].lower()
 
     tmp = {}
-    for architecture in instruction.getiterator('architecture'):
+    for architecture in instruction.iter('architecture'):
         name = architecture.attrib['name']
         measurements = parse_measurements(architecture)
         if measurements:
@@ -78,13 +78,13 @@ def parse_instruction(instruction):
 def parse_measurements(architecture):
     result = []
     # we favour real-world measurements over IACA results
-    for item in architecture.getiterator('measurement'):
+    for item in architecture.iter('measurement'):
         result.append(parse_measurement(item))
 
     if not result:
         # if the worst cames to true, we pick the latest IACA
         iaca = None
-        for item in architecture.getiterator('IACA'):
+        for item in architecture.iter('IACA'):
             tmp = parse_iaca(item)
             if iaca is None or tmp.version > iaca.version:
                 iaca = tmp
@@ -103,7 +103,7 @@ def parse_measurement(measurement):
 
     # we're not dig into latency conditions, just record cycles
     tmp = set()
-    for latency in measurement.getiterator('latency'):
+    for latency in measurement.iter('latency'):
         if 'cycles' in latency.attrib:
             cycles = int(latency.attrib['cycles'])
             tmp.add(cycles)
@@ -152,7 +152,7 @@ def parse_ports(tag):
 
         l.append(d)
 
-    for attr, value in tag.attrib.iteritems():
+    for attr, value in tag.attrib.items():
         if not attr.startswith('port'):
             continue
 

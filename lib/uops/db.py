@@ -7,7 +7,7 @@ class InstructionsDB(object):
             list.append(instr)
             grouped[instr.name] = list
 
-            for architecture in instr.measurements.iterkeys():
+            for architecture in instr.measurements.keys():
                 architectures.add(architecture)
 
         self.db = grouped

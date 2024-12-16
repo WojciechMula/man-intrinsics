@@ -28,7 +28,7 @@ class Generate(object):
         for instruction in arch_details:
             res += self.TABLE_START
             res += self.TABLE_HEADER % instruction.form
-            for arch, measurements in instruction.measurements.iteritems():
+            for arch, measurements in instruction.measurements.items():
                 if not self.datasource.filter_by_arch(arch):
                     continue
 
@@ -87,7 +87,7 @@ class Range(object):
 
 def format_latency(latencies):
     if latencies is None:
-        return '\-'
+        return r'\-'
 
     if type(latencies) is int:
         return str(latencies)
@@ -113,13 +113,13 @@ def format_latency(latencies):
 
 def format_port_details(port_details):
     if port_details is None:
-        return '\-'
+        return r'\-'
 
     return ' '.join('p%s:%d' % (pd.ports, pd.uops) for pd in port_details)
 
 
 def format_throughput(throughput):
     if throughput is None:
-        return '\-'
+        return r'\-'
 
     return '%0.2f' % throughput

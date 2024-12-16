@@ -35,10 +35,10 @@ class GeneratorBase(object):
 
             d[key].append(entry)
 
-        self.duplicated_names = dict(((key, list) for key, list in d.iteritems() if len(list) > 1))
+        self.duplicated_names = dict(((key, list) for key, list in d.items() if len(list) > 1))
 
         # fixup duplicated names: append technology tag
-        for name, list in self.duplicated_names.iteritems():
+        for name, list in self.duplicated_names.items():
             for index, entry in enumerate(list):
                 if index > 0:
                     entry.unique_name = '%s-%s' % (entry.unique_name, entry.technology.lower())

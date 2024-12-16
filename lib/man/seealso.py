@@ -47,7 +47,8 @@ class Finder(object):
         if len(self.list) <= 1:
             return
 
-        list = sorted(set(self.list))
+        tmp = set(self.list)
+        list = sorted(tmp, key=lambda v: v.unique_name)
 
         return [entry.unique_name for entry in list if entry.unique_name != self.entry.unique_name]
 

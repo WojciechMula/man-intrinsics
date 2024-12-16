@@ -101,7 +101,7 @@ def load(path, filter_by_isa):
 
     db = Database()
 
-    item = data.getiterator('intrinsics_list')[0]
+    item = next(data.iter('intrinsics_list'))
     db.date    = normalize_date(item.attrib['date'])
     db.version = item.attrib['version']
 
