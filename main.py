@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import textwrap
 import logging
 log = logging.getLogger('main')
@@ -49,7 +49,7 @@ class Application(object):
         text = "List of ISAs defined in %s: %s." % \
                (self.options.instructions_xml, fmtset(instr_db.get_cpuids()))
 
-        print '\n'.join(textwrap.wrap(text))
+        print('\n'.join(textwrap.wrap(text)))
 
 
     def dump_arch(self):
@@ -57,13 +57,13 @@ class Application(object):
 
         arch_db = self.datasource.get_architecture_details()
 
-        print "List of architectures defined in %s" % self.options.uops_xml
+        print("List of architectures defined in %s" % self.options.uops_xml)
         for symbol in sorted(arch_db.get_architectures()):
             name = architecture_name(symbol)
             if name != symbol:
-                print '* %s (%s)' % (name, symbol)
+                print('* %s (%s)' % (name, symbol))
             else:
-                print '* %s' % symbol
+                print('* %s' % symbol)
 
 
 def get_options():

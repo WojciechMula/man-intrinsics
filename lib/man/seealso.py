@@ -1,5 +1,5 @@
-from seealso_patterns import *
-from patterns import MAN_GROUP
+from .seealso_patterns import *
+from .patterns import MAN_GROUP
 
 
 class Generate(object):

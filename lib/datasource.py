@@ -2,9 +2,9 @@ import logging
 log = logging.getLogger('main')
 
 
-from guide.loader import load as load_guide
-from uops.loader import load as load_uops
-from uops import architecture_name, normalize
+from .guide.loader import load as load_guide
+from .uops.loader import load as load_uops
+from .uops import architecture_name, normalize
 
 
 class DataSource(object):

@@ -1,4 +1,4 @@
-from uops_patterns import *
+from .uops_patterns import *
 
 class Generate(object):
     def __init__(self, options, datasource):

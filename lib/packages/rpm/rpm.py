@@ -6,9 +6,9 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 
 
-from package import Package
+from lib.packages.package import Package
 from lib.uops import normalize
-from patterns import *
+from .patterns import *
 
 
 class RpmSupport(Package):

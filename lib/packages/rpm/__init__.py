@@ -1,4 +1,4 @@
-from rpm import RpmSupport
+from .rpm import RpmSupport
 
 
 def create_spec_file(options, datasource, generated_files):

@@ -1,5 +1,5 @@
-from uops import Generate as GenerateUopsDetails
-from seealso import Generate as GenerateSeeAlso
+from .uops import Generate as GenerateUopsDetails
+from .seealso import Generate as GenerateSeeAlso
 
 
 class GeneratorBase(object):

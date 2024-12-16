@@ -1,4 +1,4 @@
-from deb import DebSupport
+from .deb import DebSupport
 
 
 def create_files(options, datasource):

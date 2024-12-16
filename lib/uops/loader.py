@@ -4,8 +4,8 @@ import logging
 
 log = logging.getLogger('main')
 
-from model import *
-from db import *
+from .model import *
+from .db import *
 
 def load(path):
     log.debug("Loading data from '%s'...", path)

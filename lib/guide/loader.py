@@ -3,7 +3,7 @@ import logging
 
 log = logging.getLogger('main')
 
-from model import *
+from .model import *
 
 
 class Builder(object):

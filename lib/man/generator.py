@@ -1,4 +1,4 @@
-from patterns import *
+from .patterns import *
 from os.path import join
 from os.path import exists
 from os.path import islink
@@ -10,7 +10,7 @@ import gzip
 import logging
 log = logging.getLogger('main')
 
-from generator_base import GeneratorBase
+from .generator_base import GeneratorBase
 
 
 class Generator(GeneratorBase):
